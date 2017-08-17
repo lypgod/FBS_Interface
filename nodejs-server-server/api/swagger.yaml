@@ -1,0 +1,289 @@
+---
+swagger: "2.0"
+info:
+  description: "Front/Back-end seperated developing framework - interface part."
+  version: "1.0.0"
+  title: "FBS_Interface"
+  contact:
+    email: "lypgod@hotmail.com"
+host: "localhost:8080"
+basePath: "/"
+tags:
+- name: "User"
+  description: "user related stuff"
+schemes:
+- "http"
+- "https"
+paths:
+  /user:
+    get:
+      tags:
+      - "User"
+      summary: "Get all user list"
+      description: ""
+      operationId: "getAllUsers"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/inline_response_200"
+      x-swagger-router-controller: "User"
+    post:
+      tags:
+      - "User"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "addUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/user"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/inline_response_200"
+        400:
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/inline_response_400"
+      x-swagger-router-controller: "User"
+  /user/{userName}:
+    get:
+      tags:
+      - "User"
+      summary: "Get user by user name"
+      description: ""
+      operationId: "getUserByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userName"
+        in: "path"
+        description: "The name that needs to be fetched. Use user1 for testing."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/inline_response_200"
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "User"
+    put:
+      tags:
+      - "User"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userName"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/body"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/inline_response_200"
+        400:
+          description: "Invalid user supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "User"
+    delete:
+      tags:
+      - "User"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userName"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "User"
+  /user/createWithList:
+    post:
+      tags:
+      - "User"
+      summary: "Creates list of users with given input array"
+      description: ""
+      operationId: "createUsersWithList"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "users"
+        description: "List of user object"
+        required: true
+        schema:
+          $ref: "#/definitions/users"
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "User"
+  /user/login:
+    get:
+      tags:
+      - "User"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userName"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+        400:
+          description: "Invalid username/password supplied"
+      x-swagger-router-controller: "User"
+  /user/logout:
+    get:
+      tags:
+      - "User"
+      summary: "Logs out current logged in user session"
+      description: ""
+      operationId: "logoutUser"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "User"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  User:
+    type: "object"
+    required:
+    - "password"
+    - "userName"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userName:
+        type: "string"
+      password:
+        type: "string"
+  UserList:
+    type: "object"
+    properties:
+      users:
+        type: "array"
+        items:
+          $ref: "#/definitions/inline_response_200"
+  ExceptionResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "array"
+        items:
+          type: "string"
+  inline_response_200:
+    required:
+    - "password"
+    - "userName"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userName:
+        type: "string"
+      password:
+        type: "string"
+  user:
+    type: "object"
+    required:
+    - "password"
+    - "userName"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userName:
+        type: "string"
+      password:
+        type: "string"
+  inline_response_400:
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "array"
+        items:
+          type: "string"
+  body:
+    type: "object"
+    required:
+    - "password"
+    - "userName"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      userName:
+        type: "string"
+      password:
+        type: "string"
+  users:
+    type: "object"
+    properties:
+      users:
+        type: "array"
+        items:
+          $ref: "#/definitions/inline_response_200"
